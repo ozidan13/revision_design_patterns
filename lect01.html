@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Design Patterns - Lecture 1 Comprehensive Exam</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #ecf0f1;
+            --accent: #e74c3c;
+            --text: #2c3e50;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+            --success: #27ae60;
+            --border: #bdc3c7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: -1px;
+        }
+
+        .meta {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .question-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .q-header {
+            background: var(--secondary);
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .q-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .q-source {
+            font-size: 0.85rem;
+            color: #fff;
+            background: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .q-body {
+            padding: 25px;
+        }
+
+        .instruction {
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        /* Diagram Styles */
+        .diagram-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #fff;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+        }
+
+        .uml-class {
+            border: 2px solid #333;
+            padding: 15px;
+            min-width: 100px;
+            text-align: center;
+            font-weight: bold;
+            background: #fff;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .uml-line {
+            height: 2px;
+            background: #333;
+            width: 100px;
+            position: relative;
+            margin: 0 10px;
+        }
+
+        .uml-multiplicity-left {
+            position: absolute;
+            top: -20px;
+            left: 5px;
+            font-family: monospace;
+        }
+
+        .uml-multiplicity-right {
+            position: absolute;
+            top: -20px;
+            right: 5px;
+            font-family: monospace;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 1rem;
+            line-height: 1.7;
+            border: 1px solid #1a1e24;
+        }
+
+        .blank {
+            display: inline-block;
+            min-width: 80px;
+            border-bottom: 2px solid var(--accent);
+            color: var(--accent);
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-show {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.2s;
+            display: block;
+            margin: 25px auto 0;
+        }
+
+        .btn-show:hover {
+            background-color: #34495e;
+        }
+
+        .answer-section {
+            display: none;
+            background: #fdfdfd;
+            border-top: 1px solid #eee;
+            padding: 25px;
+            margin-top: 20px;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .correct-answer {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 5px solid var(--success);
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .explanation {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Tahoma', 'Segoe UI', sans-serif;
+            color: #444;
+            line-height: 1.8;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 6px;
+            border-right: 5px solid var(--accent);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Final Exam: Object-Oriented Programming</h1>
+            <div class="meta">Based strictly on "Lec-1.pdf" | Zero Assumptions</div>
+        </header>
+
+        <!-- Question 1: Diagram Analysis -->
+        <div class="question-card" id="q1">
+            <div class="q-header">
+                <span class="q-title">Q1: Association Diagram Analysis</span>
+                <span class="q-source">Source: Slide "Relationships: Association"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Based on the UML diagram structure found in the slides, complete the code to
+                    match this relationship:</p>
+
+                <div class="diagram-container">
+                    <div class="uml-class">Car</div>
+                    <div class="uml-line">
+                        <span class="uml-multiplicity-left">*</span>
+                        <span class="uml-multiplicity-right">0..1</span>
+                    </div>
+                    <div class="uml-class">Owner</div>
+                </div>
+
+                <pre>
+public class Car{
+    private <span class="blank">_______</span> o;
+}</pre>
+                <button class="btn-show" onclick="toggleAnswer('a1')">Show Answer</button>
+                <div id="a1" class="answer-section">
+                    <div class="correct-answer">Owner</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        السلايد بتوضح علاقة Association بين كلاس <code>Car</code> وكلاس <code>Owner</code>. الرسم
+                        والملتيبيستي (Multiplicity) بتشير إن العربية ممكن يكون ليها مالك واحد (أو ولا واحد 0..1). عشان
+                        نمثل ده في الكود، بنعمل متغير (Instance Variable) جوه كلاس <code>Car</code> نوعه
+                        <code>Owner</code>. ده بيحقق علاقة "Has-a".
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" id="q2">
+            <div class="q-header">
+                <span class="q-title">Q2: Abstraction & Static Methods</span>
+                <span class="q-source">Source: Slide "Abstraction"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Complete the method signature from the Math class example:</p>
+                <pre>
+public static <span class="blank">______</span> sqrt(double a)</pre>
+                <button class="btn-show" onclick="toggleAnswer('a2')">Show Answer</button>
+                <div id="a2" class="answer-section">
+                    <div class="correct-answer">double</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        في مثال الـ Abstraction، السلايد ذكرت إن ميثود <code>sqrt</code> (الجذر التربيعي) في كلاس
+                        <code>Math</code> بترجع قيمة نوعها <code>double</code>. ده مثال على إخفاء تفاصيل التنفيذ
+                        (Implementation Hiding) واستخدام الميثود مباشرة.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" id="q3">
+            <div class="q-header">
+                <span class="q-title">Q3: Encapsulation Implementation</span>
+                <span class="q-source">Source: Slide "Encapsulation (II)"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Complete the setter method to ensure encapsulation:</p>
+                <pre>
+public class Product{
+    private double price;
+    /* ... constructor ... */
+    
+    public void setPrice(double price){
+        <span class="blank">__________</span> = price;
+    }
+}</pre>
+                <button class="btn-show" onclick="toggleAnswer('a3')">Show Answer</button>
+                <div id="a3" class="answer-section">
+                    <div class="correct-answer">this.price</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        عشان نفرق بين المتغير اللي جاي في الـ Argument (اللي اسمه price) وبين متغير الكلاس (Instance
+                        Variable)، لازم نستخدم كلمة <code>this.price</code>. ده أساسي في الـ Setters عشان نحط القيمة صح
+                        جوه الأوبجيكت.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" id="q4">
+            <div class="q-header">
+                <span class="q-title">Q4: Abstract Class Methods</span>
+                <span class="q-source">Source: Slide "Abstract class example"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Fill in the missing keyword for the eat method:</p>
+                <pre>
+abstract class Food{
+    // All food has calories that can be calculated differently.
+    public abstract float getTotalCalories();
+    
+    // All food can be eaten in different ways.
+    public <span class="blank">________</span> String eat();
+}</pre>
+                <button class="btn-show" onclick="toggleAnswer('a4')">Show Answer</button>
+                <div id="a4" class="answer-section">
+                    <div class="correct-answer">abstract</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        الميثود <code>eat</code> مالهاش كود (No implementation) في الكلاس ده، وعايزين نجبر الكلاسات اللي
+                        هتورث منها إنها تكتب الكود الخاص بيها. عشان كدة لازم نعرفها إنها <code>abstract</code>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card" id="q5">
+            <div class="q-header">
+                <span class="q-title">Q5: Abstract Class Usage</span>
+                <span class="q-source">Source: Slide "Abstract class example (Usage)"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Complete the constructor for the Orange class:</p>
+                <pre>
+class Orange extends Food{
+    private static final float CALORIES_PER_GRAM = .37f;
+    /* ... */
+    public Orange(float weight, String weightUnit, String type) { 
+        <span class="blank">_____</span>(weight, weightUnit); 
+        super.calories = CALORIES_PER_GRAM;
+        this.type = type;
+    }
+}</pre>
+                <button class="btn-show" onclick="toggleAnswer('a5')">Show Answer</button>
+                <div id="a5" class="answer-section">
+                    <div class="correct-answer">super</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        كلاس <code>Orange</code> بيورث من <code>Food</code>. أول حاجة لازم نعملها في الـ Constructor
+                        إننا ننادي على كونستركتور الأب (Food) عشان يهيأ المتغيرات الأساسية زي الوزن. بنعمل ده بكلمة
+                        <code>super()</code>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card" id="q6">
+            <div class="q-header">
+                <span class="q-title">Q6: Interface Methods</span>
+                <span class="q-source">Source: Slide "Interface example (Declaration)"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Determine the return type for the compete method:</p>
+                <pre>
+interface Athlete{
+    // An athlete may compete in different sports.
+    <span class="blank">____</span> compete(String competition);
+    
+    void practice();
+}</pre>
+                <button class="btn-show" onclick="toggleAnswer('a6')">Show Answer</button>
+                <div id="a6" class="answer-section">
+                    <div class="correct-answer">void</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        في تعريف الـ Interface في السلايد، الميثود <code>compete</code> مش بترجع أي قيمة (هي بس بتنفذ
+                        فعل المنافسة)، عشان كدة الـ Return Type بتاعها هو <code>void</code>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="q-header">
+                <span class="q-title">Q7: Multiple Interface Implementation</span>
+                <span class="q-source">Source: Slide "Interface example (Usage)"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Complete the class header to implement multiple interfaces:</p>
+                <pre>
+class Talented <span class="blank">__________</span> Athlete, Artist{
+    private int age;
+    private String name;
+    /* ... */
+}</pre>
+                <button class="btn-show" onclick="toggleAnswer('a7')">Show Answer</button>
+                <div id="a7" class="answer-section">
+                    <div class="correct-answer">implements</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        الكلاس <code>Talented</code> بيجمع بين مهارات الرياضي (Athlete) والفنان (Artist). في الجافا،
+                        عشان نطبق انترفيس بنستخدم كلمة <code>implements</code>، ونقدر نكتب أكتر من انترفيس بينهم فاصلة.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="q-header">
+                <span class="q-title">Q8: Inheritance & Logic</span>
+                <span class="q-source">Source: Slide "Inheritance Example (I)"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Complete the calculation in the Product class:</p>
+                <pre>
+public double getSalePrice(double percentage){
+    return this.price - ((<span class="blank">__________</span>/100) * this.price);
+}</pre>
+                <button class="btn-show" onclick="toggleAnswer('a8')">Show Answer</button>
+                <div id="a8" class="answer-section">
+                    <div class="correct-answer">percentage</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        الميثود دي بتحسب السعر بعد الخصم. المعادلة بتقول: السعر الأصلي ناقص (نسبة الخصم / 100 * السعر).
+                        المتغير اللي شايل قيمة النسبة المئوية اللي مبعوت للـ method اسمه <code>percentage</code>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="q-header">
+                <span class="q-title">Q9: Subclass Fields</span>
+                <span class="q-source">Source: Slide "Inheritance Example (II)"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Complete the assignment in the FoodProduct constructor:</p>
+                <pre>
+class FoodProduct extends Product{
+    private LocalDate expirationDate;
+    public FoodProduct(int id, float price, String name, LocalDate expirationDate){
+        super(id, price, name);
+        this.expirationDate = <span class="blank">______________</span>;
+    }
+}</pre>
+                <button class="btn-show" onclick="toggleAnswer('a9')">Show Answer</button>
+                <div id="a9" class="answer-section">
+                    <div class="correct-answer">expirationDate</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        بعد ما نادينا على <code>super()</code> عشان نهيأ الحاجات الأساسية (الاسم والسعر)، لازم نهيأ
+                        المتغير الخاص بالكلاس ده وهو <code>expirationDate</code> بالقيمة اللي جاية في الـ Constructor.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="q-header">
+                <span class="q-title">Q10: Polymorphism & Arrays</span>
+                <span class="q-source">Source: Slide "Polymorphism (III)"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Complete the Enhanced For Loop syntax:</p>
+                <pre>
+Product [] products = {p1, p2};
+for(Product p<span class="blank">_</span> products){
+    System.out.println(p.getSalePrice(20.0));
+}</pre>
+                <button class="btn-show" onclick="toggleAnswer('a10')">Show Answer</button>
+                <div id="a10" class="answer-section">
+                    <div class="correct-answer">:</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        الـ Enhanced For Loop (أو for-each) في الجافا بتستخدم النقطتين الرأسيتين <code>:</code> للفصل
+                        بين المتغير اللي هيمسك كل عنصر (p) وبين المصفوفة نفسها (products). الكود هنا بيورينا
+                        البوليمورفيزم، إننا بنلف على أنواع مختلفة (FoodProduct و ElectricProduct) كأنهم Product عادي.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="question-card" id="q11">
+            <div class="q-header">
+                <span class="q-title">Q11: Final Variables</span>
+                <span class="q-source">Source: Slide "The final keyword"</span>
+            </div>
+            <div class="q-body">
+                <p class="instruction">Complete the declaration of the constant PI:</p>
+                <pre>
+static <span class="blank">_____</span> double PI = 3.14159265358979</pre>
+                <button class="btn-show" onclick="toggleAnswer('a11')">Show Answer</button>
+                <div id="a11" class="answer-section">
+                    <div class="correct-answer">final</div>
+                    <div class="explanation">
+                        <strong>الشرح:</strong><br>
+                        المتغير <code>PI</code> هو ثابت رياضي قيمته مش بتتغير. في الجافا، بنستخدم كلمة
+                        <code>final</code> عشان نمنع تغيير قيمة المتغير بعد ما نديله قيمة أول مرة.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Software Design Patterns | Final Exam Generation</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            var x = document.getElementById(id);
+            if (x.style.display === "block") {
+                x.style.display = "none";
+            } else {
+                x.style.display = "block";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

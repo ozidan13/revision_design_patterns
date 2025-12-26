@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factory Pattern Final Exam (Lec 3)</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #fdfdfd;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --border: #e0e0e0;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: var(--text);
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 2.2rem;
+        }
+
+        .sub-header {
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .q-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: var(--accent);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .source-badge {
+            background: #ecf0f1;
+            color: #7f8c8d;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* --- DIAGRAM VISUALIZATION --- */
+        .diagram-viewer {
+            background: #f8f9fa;
+            border: 2px dashed #bdc3c7;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+
+        .uml-box {
+            background: #fff;
+            border: 1px solid #000;
+            padding: 8px;
+            min-width: 120px;
+            text-align: center;
+            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .uml-title {
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            margin-bottom: 5px;
+            padding-bottom: 2px;
+        }
+
+        .uml-methods {
+            text-align: left;
+            font-size: 0.8rem;
+            color: #c0392b;
+        }
+
+        .connector {
+            font-size: 20px;
+            color: #555;
+            align-self: center;
+        }
+
+        /* --- CODE EDITOR --- */
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            line-height: 1.5;
+        }
+
+        input.blank {
+            background: #3e4451;
+            border: none;
+            border-bottom: 1px solid #5c6370;
+            color: #e5c07b;
+            font-family: inherit;
+            font-size: inherit;
+            text-align: center;
+            min-width: 80px;
+            padding: 0 4px;
+        }
+
+        input.blank:focus {
+            outline: none;
+            border-bottom-color: #61afef;
+        }
+
+        /* --- INTERACTION --- */
+        .show-ans-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .show-ans-btn:hover {
+            background: var(--accent);
+        }
+
+        .answer-panel {
+            display: none;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .explanation {
+            direction: rtl;
+            text-align: right;
+            background: #e8f6f3;
+            border-right: 4px solid #1abc9c;
+            padding: 15px;
+            color: #16a085;
+            margin-top: 15px;
+            border-radius: 4px 0 0 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Factory Design Pattern Exam</h1>
+            <div class="sub-header">Strict Adherence to Lec 3.pdf | 15 Questions</div>
+        </header>
+
+        <!-- Q1: Slide 4 Diagram -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 1: The Problem</span>
+                <span class="source-badge">Slide 4</span>
+            </div>
+            <p><strong>Diagram Analysis:</strong> The diagram on Slide 4 shows a direct link between "LogisticsApp" and
+                "RoadLogistics" / "SeaLogistics". This represents the core problem.</p>
+
+            <div class="diagram-viewer">
+                <div class="uml-box">
+                    <div class="uml-title">LogisticsApp</div>
+                </div>
+                <div class="connector">----&gt;</div>
+                <div class="uml-box">
+                    <div class="uml-title">RoadLogistics</div>
+                </div>
+            </div>
+
+            <p>Complete the code that represents this <strong>Tight Coupling</strong> problem:</p>
+            <pre>
+public class LogisticsApp {
+    // Problem: Direct Instantiation
+    RoadLogistics road = new <input type="text" class="blank" placeholder="???">();
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>RoadLogistics road = new <strong>RoadLogistics</strong>();</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    سلايد 4 بتعرض المشكلة "Problem". الرسمة بتوضح سهم مباشر من LogisticsApp لـ RoadLogistics. ده معناه
+                    إن الكود بيعمل de>new</code> بشكل مباشر (Tight Coupling)، وده اللي إحنا عاوزين نتجنبه.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q2: Slide 5 Code Snippet -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 2: Solution Code</span>
+                <span class="source-badge">Slide 5</span>
+            </div>
+            <p>Slide 5 contains a specific code snippet demonstrating how the factory method is used abstractly.</p>
+            <pre>
+Transport t = <input type="text" class="blank" placeholder="MethodName">();</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>Transport t = <strong>createTransport</strong>();</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    موجود نصاً في سلايد 5 في صندوق "Solution". الميثود اللي بتنشئ الأوبجكت اسمها
+                    de>createTransport</code>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3: Slide 5 Diagram Logic -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 3: Sea Logistics Logic</span>
+                <span class="source-badge">Slide 5</span>
+            </div>
+            <p><strong>Diagram Analysis:</strong> The diagram explicitly shows the implementation of
+                de>SeaLogistics</code>.</p>
+            <div class="diagram-viewer">
+                <div class="uml-box">
+                    <div class="uml-title">SeaLogistics</div>
+                    <div class="uml-methods">return new Ship()</div>
+                </div>
+            </div>
+            <p>Write the code based <strong>strictly</strong> on the diagram box above:</p>
+            <pre>
+// Inside SeaLogistics class
+return new <input type="text" class="blank" placeholder="ClassName">();</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>return new <strong>Ship</strong>();</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    الرسمة في سلايد 5 واضحة جداً، المربع بتاع SeaLogistics مكتوب جواه de>return new Ship()</code>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q4: Slide 6 Diagram (Truck) -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 4: Transport Implementation</span>
+                <span class="source-badge">Slide 6</span>
+            </div>
+            <p><strong>Diagram Analysis:</strong> Slide 6 connects de>Truck</code> to de>Transport</code> via an
+                implementation arrow.</p>
+            <div class="diagram-viewer">
+                <div class="uml-box">
+                    <div class="uml-title">&lt;&lt;interface&gt;&gt;<br>Transport</div>
+                </div>
+                <div class="connector">&lt;---</div>
+                <div class="uml-box">
+                    <div class="uml-title">Truck</div>
+                </div>
+            </div>
+            <p>The code for de>Truck</code> is not in the text, but the diagram requires it. Write it:</p>
+            <pre>
+public class Truck implements <input type="text" class="blank" placeholder="Interface"> {
+    // ...
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>public class Truck implements <strong>Transport</strong></pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    الديجرام في سلايد 6 بيوضح إن Truck بتنفذ (implements) الـ Transport interface.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q5: Slide 8 Structure Code -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 5: Client Usage Snippet</span>
+                <span class="source-badge">Slide 8</span>
+            </div>
+            <p>Slide 8 includes a small code snippet showing how the Product is used after creation.</p>
+            <pre>
+Product p = createProduct();
+p.<input type="text" class="blank" placeholder="MethodName">();</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>Product p = createProduct();
+p.<strong>doStuff</strong>();</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    مكتوب نصاً في سلايد 8 تحت عنوان Components. الميثود الافتراضية اللي مستخدمة في المثال هي
+                    de>doStuff()</code>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q6: Slide 8 Diagram (Creator) -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 6: Creator Definition</span>
+                <span class="source-badge">Slide 8</span>
+            </div>
+            <p><strong>Diagram Analysis:</strong> The generic UML diagram defines the abstract Creator.</p>
+            <div class="diagram-viewer">
+                <div class="uml-box">
+                    <div class="uml-title">Creator</div>
+                    <div class="uml-methods">+ someOperation()<br>+ createProduct(): Product</div>
+                </div>
+            </div>
+            <pre>
+abstract class Creator {
+    public abstract <input type="text" class="blank" placeholder="Type"> createProduct();
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>public abstract <strong>Product</strong> createProduct();</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    حسب الرسمة في سلايد 8، الـ Return Type للميثود de>createProduct</code> هو de>Product</code>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q7: Slide 9 Class Diagram (Square) -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 7: Diagram-Only Class</span>
+                <span class="source-badge">Slide 9</span>
+            </div>
+            <p><strong>Critical Observation:</strong> The diagram on Slide 9 includes a <strong>Square</strong> class.
+                The text code examples later do not show it. You must create it based on the diagram.</p>
+            <div class="diagram-viewer">
+                <div class="uml-box">
+                    <div class="uml-title">Square</div>
+                </div>
+                <div class="connector">---&gt;</div>
+                <div class="uml-box">
+                    <div class="uml-title">Shape</div>
+                </div>
+            </div>
+            <pre>
+public class Square implements Shape {
+    @Override
+    public void <input type="text" class="blank" placeholder="Method">() {
+        System.out.println("Draw Square");
+    }
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>public void <strong>draw</strong>()</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    الديجرام في سلايد 9 فيه كلاس Square. رغم إنه مش مشروح في الكود (سلايد 11-16)، بس لازم نعترف بوجوده
+                    لأنه في الرسمة.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q8: Slide 11 Code -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 8: Interface Definition</span>
+                <span class="source-badge">Slide 11</span>
+            </div>
+            <p>Exact code from Slide 11:</p>
+            <pre>
+public interface Shape {
+    void <input type="text" class="blank" placeholder="Method">();
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>void <strong>draw</strong>();</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    الكود في سلايد 11 بيعرف الإنترفيس Shape بميثود draw.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q9: Slide 12 Code -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 9: Triangle Implementation</span>
+                <span class="source-badge">Slide 12</span>
+            </div>
+            <p>Exact code from Slide 12:</p>
+            <pre>
+public class Triangle implements Shape {
+    <input type="text" class="blank" placeholder="Annotation">
+    public void draw() {
+        System.out.println("Draw Triangle");
+    }
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre><strong>@Override</strong></pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    موجود في سلايد 12.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q10: Slide 13 Code -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 10: Rectangle Implementation</span>
+                <span class="source-badge">Slide 13</span>
+            </div>
+            <p>Exact code from Slide 13:</p>
+            <pre>
+public class Rectangle implements Shape {
+    @Override
+    public void draw() {
+        System.out.<input type="text" class="blank" placeholder="Command">("Draw Rectangle");
+    }
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>System.out.<strong>println</strong>("Draw Rectangle");</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    موجود في سلايد 13.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q11: Slide 14 Code -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 11: Circle Implementation</span>
+                <span class="source-badge">Slide 14</span>
+            </div>
+            <p>Exact code from Slide 14:</p>
+            <pre>
+public class Circle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Draw <input type="text" class="blank" placeholder="Word">");
+    }
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>Draw <strong>Circle</strong></pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    موجود في سلايد 14.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q12: Slide 15 Factory Logic (Circle) -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 12: Factory Logic (Circle)</span>
+                <span class="source-badge">Slide 15</span>
+            </div>
+            <p>The core logic from Slide 15:</p>
+            <pre>
+if(shapeType.<input type="text" class="blank" placeholder="Method">("Circle")){
+    return new Circle();    
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>if(shapeType.<strong>equalsIgnoreCase</strong>("Circle"))</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    موجود في سلايد 15.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q13: Slide 15 Factory Logic (Triangle) -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 13: Factory Logic (Triangle)</span>
+                <span class="source-badge">Slide 15</span>
+            </div>
+            <p>Logic for Triangle in Slide 15:</p>
+            <pre>
+} else if(shapeType.equalsIgnoreCase("Triangle")){
+    return <input type="text" class="blank" placeholder="Keyword"> <input type="text" class="blank" placeholder="Class">();
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>return <strong>new</strong> <strong>Triangle</strong>();</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    موجود في سلايد 15.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q14: Slide 16 Usage (Instantiation) -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 14: Main Method Init</span>
+                <span class="source-badge">Slide 16</span>
+            </div>
+            <p>Instantiation in Main method (Slide 16):</p>
+            <pre>
+public static void main(String[] args) {
+    <input type="text" class="blank" placeholder="Type"> shapeFactory = new ShapeFactory();
+    // ...
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre><strong>ShapeFactory</strong> shapeFactory = new ShapeFactory();</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    موجود في سلايد 16.
+                </div>
+            </div>
+        </div>
+
+        <!-- Q15: Slide 16 Usage (Calls) -->
+        <div class="question-card">
+            <div class="q-meta">
+                <span>Question 15: Creating Objects</span>
+                <span class="source-badge">Slide 16</span>
+            </div>
+            <p>Method calls in Slide 16:</p>
+            <pre>
+    Shape shape1 = shapeFactory.<input type="text" class="blank" placeholder="Method">("CIRCLE");
+    Shape shape2 = shapeFactory.getShape("RECTANGLE");
+}</pre>
+
+            <button class="show-ans-btn" onclick="toggle(this)">Show Answer</button>
+            <div class="answer-panel">
+                <pre>Shape shape1 = shapeFactory.<strong>getShape</strong>("CIRCLE");</pre>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    موجود في سلايد 16.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggle(btn) {
+            var panel = btn.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+                btn.innerHTML = "Show Answer";
+                btn.style.backgroundColor = "var(--primary)";
+            } else {
+                panel.style.display = "block";
+                btn.innerHTML = "Hide Answer";
+                btn.style.backgroundColor = "var(--accent)";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

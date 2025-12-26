@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Design Patterns - Final Exam (Lec 2)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+            --success: #28a745;
+            --border: #dee2e6;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .header h1 {
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .header p {
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .q-tag {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .source-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .diagram-container {
+            background: white;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .code-container {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            white-space: pre;
+            border: 1px solid #444;
+        }
+
+        input.code-input {
+            background: #3b4048;
+            border: none;
+            border-bottom: 2px solid #666;
+            color: #fff;
+            font-family: inherit;
+            font-size: inherit;
+            text-align: center;
+            width: 120px;
+            padding: 0 5px;
+            margin: 0 2px;
+        }
+
+        input.code-input:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
+            background: #4b5263;
+        }
+
+        .btn-show {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-show:hover {
+            background: #2980b9;
+        }
+
+        .answer-box {
+            display: none;
+            margin-top: 1.5rem;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .correct-ans {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            border-left: 5px solid var(--success);
+        }
+
+        .explanation {
+            background: #fff3cd;
+            color: #856404;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid #ffeeba;
+            direction: rtl;
+            text-align: right;
+            line-height: 1.8;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Syntax Highlighting */
+        .k {
+            color: #c678dd;
+        }
+
+        /* Keyword */
+        .t {
+            color: #e5c07b;
+        }
+
+        /* Type */
+        .s {
+            color: #98c379;
+        }
+
+        /* String */
+        .c {
+            color: #5c6370;
+            font-style: italic;
+        }
+
+        /* Comment */
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Final Exam: Design Patterns (Lec 2)</h1>
+        <p>Complete Resource | Code & Diagrams included</p>
+    </div>
+
+    <div class="container">
+
+        <!-- QUESTION 1: DIAGRAM (Slide 4) -->
+        <div class="question-card" id="q1">
+            <div class="question-header">
+                <span class="q-tag">Q1: Diagram</span>
+                <span class="source-tag">Source: Slide 4</span>
+            </div>
+            <p><strong>Diagram Reconstruction:</strong> Based on the "Gang of Four (GoF) patterns" hierarchy described
+                in Slide 4, identify the missing pattern in the <strong>Structural</strong> group.</p>
+
+            <div class="diagram-container">
+                <div class="mermaid">
+                    graph TD
+                    GoF[GoF Patterns]
+                    GoF --> C[Creational]
+                    GoF --> S[Structural]
+                    GoF --> B[Behavioral]
+
+                    S --> Adapter
+                    S --> Bridge
+                    S --> Composite
+                    S --> Decorator
+                    S --> Facade
+                    S --> Flyweight
+                    S --> MISSING[???]
+
+                    style MISSING fill:#ffcccc,stroke:#ff0000
+                </div>
+            </div>
+
+            <div class="code-container">Missing Pattern: <input type="text" class="code-input" data-ans="Proxy"></div>
+
+            <button class="btn-show" onclick="toggle(1)">Show Answer</button>
+            <div class="answer-box" id="ans-1">
+                <div class="correct-ans">Correct Answer: Proxy</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    في شريحة 4، تم تقسيم الـ Patterns لـ 3 أنواع: Creational و Structural و Behavioral. تحت الـ
+                    Structural Patterns، القائمة ذكرت: Adapter, Bridge, Composite, Decorator, Facade, Flyweight وأخيراً
+                    الـ <strong>Proxy</strong>.
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION 2: DIAGRAM (Slide 7) -->
+        <div class="question-card" id="q2">
+            <div class="question-header">
+                <span class="q-tag">Q2: Diagram</span>
+                <span class="source-tag">Source: Slide 7</span>
+            </div>
+            <p><strong>Diagram Reconstruction:</strong> Based on the "Creational Patterns" list in Slide 7, identify the
+                missing pattern.</p>
+
+            <div class="diagram-container">
+                <div class="mermaid">
+                    graph LR
+                    C[Creational Patterns] --- Builder
+                    C --- Prototype
+                    C --- AbstractFactory
+                    C --- FactoryMethod
+                    C --- MISSING[???]
+
+                    style MISSING fill:#ffcccc,stroke:#ff0000
+                </div>
+            </div>
+
+            <div class="code-container">Missing Pattern: <input type="text" class="code-input" data-ans="Singleton">
+            </div>
+
+            <button class="btn-show" onclick="toggle(2)">Show Answer</button>
+            <div class="answer-box" id="ans-2">
+                <div class="correct-ans">Correct Answer: Singleton</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    شريحة 7 بتعرض قائمة الـ Creational Patterns (الأنماط الإنشائية). النمط الناقص هنا هو الـ
+                    <strong>Singleton</strong>، وهو موضوع المحاضرة الرئيسي.
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION 3: DIAGRAM (Slide 13) -->
+        <div class="question-card" id="q3">
+            <div class="question-header">
+                <span class="q-tag">Q3: Diagram</span>
+                <span class="source-tag">Source: Slide 13</span>
+            </div>
+            <p><strong>Diagram Reconstruction:</strong> Based on the "Singleton sequence diagram" title in Slide 13,
+                complete the logic flow used in the corresponding code.</p>
+
+            <div class="diagram-container">
+                <div class="mermaid">
+                    sequenceDiagram
+                    Client->>Singleton: getInstance()
+                    opt instance is null
+                    Singleton->>Singleton: Call Constructor
+                    end
+                    Singleton-->>Client: return instance
+                </div>
+            </div>
+
+            <p>Which code block corresponds to the <code>opt instance is null</code> part?</p>
+            <div class="code-container"><span class="k">if</span> (<input type="text" class="code-input"
+                    data-ans="instance == null">) { ... }</div>
+
+            <button class="btn-show" onclick="toggle(3)">Show Answer</button>
+            <div class="answer-box" id="ans-3">
+                <div class="correct-ans">Correct Answer: instance == null</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    الـ Sequence Diagram للـ Singleton بيوضح إن عملية الإنشاء (Constructor Call) بتحصل فقط لو الـ
+                    instance غير موجودة، وده بيتمثل في الكود بشرط <code>if (instance == null)</code>.
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION 4: CODE (Slide 14) -->
+        <div class="question-card" id="q4">
+            <div class="question-header">
+                <span class="q-tag">Q4: Code Completion</span>
+                <span class="source-tag">Source: Slide 14</span>
+            </div>
+            <p>Complete the basic Singleton implementation.</p>
+            <div class="code-container">
+                <span class="k">public class</span> <span class="t">RandomGenerator</span> {
+                <span class="k">private static final</span> <span class="t">RandomGenerator</span> gen =
+                <span class="k">new</span> <span class="t">RandomGenerator</span>();
+
+                <span class="k">public static</span> <span class="t">RandomGenerator</span> <span
+                    class="t">getInstance</span>() {
+                <span class="k">return</span> gen;
+                }
+
+                <input type="text" class="code-input" data-ans="private"> <span class="t">RandomGenerator</span>() {}
+                ...
+                }
+            </div>
+            <button class="btn-show" onclick="toggle(4)">Show Answer</button>
+            <div class="answer-box" id="ans-4">
+                <div class="correct-ans">Correct Answer: private</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    الـ Constructor لازم يكون <code>private</code> عشان نمنع أي كلاس تاني من إنه يعمل
+                    <code>new RandomGenerator()</code>، وبكده نضمن إن فيه instance واحدة بس.
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION 5: CODE (Slide 15) -->
+        <div class="question-card" id="q5">
+            <div class="question-header">
+                <span class="q-tag">Q5: Code Completion</span>
+                <span class="source-tag">Source: Slide 15</span>
+            </div>
+            <p>Complete the Lazy Initialization implementation.</p>
+            <div class="code-container">
+                <span class="k">public class</span> <span class="t">Singletonclass</span> {
+                <span class="k">public static</span> <span class="t">Singletonclass</span> instance;
+                <span class="k">private</span> <span class="t">Singletonclass</span>() {
+                }
+                <span class="k">public static</span> <span class="t">Singletonclass</span> <span
+                    class="t">getInstance</span>() {
+                <span class="k">if</span> (<input type="text" class="code-input" data-ans="instance == null">) {
+                instance = <span class="k">new</span> <span class="t">Singletonclass</span>();
+                }
+                <span class="k">return</span> instance;
+                }
+                }
+            </div>
+            <button class="btn-show" onclick="toggle(5)">Show Answer</button>
+            <div class="answer-box" id="ans-5">
+                <div class="correct-ans">Correct Answer: instance == null</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    في الـ Lazy Initialization، بنسأل "هل المتغير فاضي؟". لو أيوة، بنعمله Create. ده بيوفر ميموري لأننا
+                    مش بنعمل الـ Object غير لما نحتاجه.
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION 6: CODE (Slide 18) -->
+        <div class="question-card" id="q6">
+            <div class="question-header">
+                <span class="q-tag">Q6: Code Completion</span>
+                <span class="source-tag">Source: Slide 18</span>
+            </div>
+            <p>Complete the Eager Initialization implementation.</p>
+            <div class="code-container">
+                <span class="k">public class</span> <span class="t">EagerSingletonclass</span> {
+                <span class="k">private static</span> <input type="text" class="code-input" data-ans="final"> <span
+                    class="t">EagerSingletonclass</span> instance =
+                <span class="k">new</span> <span class="t">EagerSingletonclass</span>();
+
+                <span class="k">private</span> <span class="t">EagerSingletonclass</span>() {
+                }
+
+                <span class="k">public static</span> <span class="t">EagerSingletonclass</span> <span
+                    class="t">getInstance</span>() {
+                <span class="k">return</span> instance;
+                }
+                ...
+                }
+            </div>
+            <button class="btn-show" onclick="toggle(6)">Show Answer</button>
+            <div class="answer-box" id="ans-6">
+                <div class="correct-ans">Correct Answer: final</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    كلمة <code>final</code> هنا بتضمن إن الـ reference بتاع الـ instance دي هيفضل ثابت ومش هيتغير أبداً
+                    بعد ما يتعمل له initialization أول مرة.
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION 7: CODE (Slide 20) -->
+        <div class="question-card" id="q7">
+            <div class="question-header">
+                <span class="q-tag">Q7: Code Completion</span>
+                <span class="source-tag">Source: Slide 20</span>
+            </div>
+            <p>Complete the Static Block Initialization pattern.</p>
+            <div class="code-container">
+                <span class="k">public class</span> <span class="t">Staticblocksingletonclass</span> {
+                <span class="k">private static</span> <span class="t">Staticblocksingletonclass</span> instance;
+                <span class="k">private</span> <span class="t">Staticblocksingletonclass</span>() {
+                }
+
+                <input type="text" class="code-input" data-ans="static"> {
+                <span class="k">try</span> {
+                instance = <span class="k">new</span> <span class="t">Staticblocksingletonclass</span>();
+                } <span class="k">catch</span> (<span class="t">Exception</span> e) {
+                <span class="k">throw new</span> <span class="t">RuntimeException</span>(<span class="s">"Exception
+                    occurred "</span>);
+                }
+                }
+                ...
+                }
+            </div>
+            <button class="btn-show" onclick="toggle(7)">Show Answer</button>
+            <div class="answer-box" id="ans-7">
+                <div class="correct-ans">Correct Answer: static</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    الـ <code>static block</code> هو مكان خاص بيتنفذ مرة واحدة بس لما الكلاس يتحمل (Load). بنستخدمه هنا
+                    عشان نقدر نكتب <code>try-catch</code> ونعالج أي أخطاء ممكن تحصل أثناء إنشاء الـ Singleton.
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION 8: CODE (Slide 21) -->
+        <div class="question-card" id="q8">
+            <div class="question-header">
+                <span class="q-tag">Q8: Code Completion</span>
+                <span class="source-tag">Source: Slide 21</span>
+            </div>
+            <p>Add Thread-Safety to the Singleton.</p>
+            <div class="code-container">
+                <span class="k">public class</span> <span class="t">Singletonclass</span> {
+                <span class="k">public static</span> <span class="t">Singletonclass</span> instance;
+                <span class="k">private</span> <span class="t">Singletonclass</span>() {
+                }
+
+                <span class="k">public static</span> <input type="text" class="code-input" data-ans="synchronized">
+                <span class="t">Singletonclass</span>
+                <span class="t">getInstance</span>() {
+                <span class="k">if</span> (instance == <span class="k">null</span>) {
+                instance = <span class="k">new</span> <span class="t">Singletonclass</span>();
+                }
+                <span class="k">return</span> instance;
+                }
+                }
+            </div>
+            <button class="btn-show" onclick="toggle(8)">Show Answer</button>
+            <div class="answer-box" id="ans-8">
+                <div class="correct-ans">Correct Answer: synchronized</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    كلمة <code>synchronized</code> بتشتغل زي "القفل". بتخلي Thread واحد بس هو اللي يقدر يدخل الدالة دي
+                    في نفس الوقت، وده بيمنع مشاكل الـ concurrency وإنشاء أكتر من object بالغلط.
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION 9: CODE (Slide 24) -->
+        <div class="question-card" id="q9">
+            <div class="question-header">
+                <span class="q-tag">Q9: Code Completion</span>
+                <span class="source-tag">Source: Slide 24</span>
+            </div>
+            <p>Complete the Double-Checked Locking variable declaration.</p>
+            <div class="code-container">
+                <span class="k">private static</span> <input type="text" class="code-input" data-ans="volatile"> <span
+                    class="t">SingletonClassDC</span> instance;
+                <span class="k">private</span> <span class="t">SingletonClassDC</span>() {}
+            </div>
+            <button class="btn-show" onclick="toggle(9)">Show Answer</button>
+            <div class="answer-box" id="ans-9">
+                <div class="correct-ans">Correct Answer: volatile</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    كلمة <code>volatile</code> مهمة جداً هنا. بتضمن إن أي تغيير في المتغير <code>instance</code> يتكتب
+                    علطول في الذاكرة الرئيسية (Main Memory) والكل يشوفه فوراً، مش يتخزن في الـ CPU Cache.
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION 10: CODE (Slide 24) -->
+        <div class="question-card" id="q10">
+            <div class="question-header">
+                <span class="q-tag">Q10: Code Completion</span>
+                <span class="source-tag">Source: Slide 24</span>
+            </div>
+            <p>Complete the Double-Checked Locking logic block.</p>
+            <div class="code-container">
+                <span class="k">public static</span> <span class="t">SingletonClassDC</span>
+                <span class="t">getInstanceUsingDoubleLocking</span>() {
+                <span class="k">if</span> (instance == <span class="k">null</span>) {
+                <span class="k">synchronized</span> (<input type="text" class="code-input"
+                    data-ans="SingletonClassDC.class">) {
+                <span class="k">if</span> (instance == <span class="k">null</span>) {
+                instance = <span class="k">new</span> <span class="t">SingletonClassDC</span>();
+                }
+                }
+                }
+                <span class="k">return</span> instance;
+                }
+            </div>
+            <button class="btn-show" onclick="toggle(10)">Show Answer</button>
+            <div class="answer-box" id="ans-10">
+                <div class="correct-ans">Correct Answer: SingletonClassDC.class</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    هنا بنعمل Lock على الكلاس نفسه <code>SingletonClassDC.class</code>. الطريقة دي (Double-Check) بتوفر
+                    أداء أحسن لأن الـ locking بيحصل بس في المرة الأولى، مش كل مرة ننادي الدالة.
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION 11: CODE (Slide 26) -->
+        <div class="question-card" id="q11">
+            <div class="question-header">
+                <span class="q-tag">Q11: Code Completion</span>
+                <span class="source-tag">Source: Slide 26</span>
+            </div>
+            <p>Complete the Static Inner Class Implementation.</p>
+            <div class="code-container">
+                <span class="k">public class</span> <span class="t">Singleton</span> {
+                <span class="k">private</span> <span class="t">Singleton</span>() {
+                <span class="t">System</span>.out.println(<span class="s">"Instance created"</span>);
+                }
+
+                <span class="k">private static class</span> <input type="text" class="code-input"
+                    data-ans="SingletonInner"> {
+                <span class="k">private static final</span> <span class="t">Singleton</span> INSTANCE = <span
+                    class="k">new</span> <span class="t">Singleton</span>();
+                }
+
+                <span class="k">public static</span> <span class="t">Singleton</span> <span
+                    class="t">getInstance</span>()
+                { <span class="k">return</span> SingletonInner.INSTANCE;}
+                }
+            </div>
+            <button class="btn-show" onclick="toggle(11)">Show Answer</button>
+            <div class="answer-box" id="ans-11">
+                <div class="correct-ans">Correct Answer: SingletonInner</div>
+                <div class="explanation">
+                    <strong>💡 الشرح:</strong>
+                    استخدام <code>Inner Class</code> هنا عبقري. الكلاس الداخلي ده مش هيتحمل في الميموري غير لما نستخدمه.
+                    فده بيحقق Lazy Loading بشكل أوتوماتيكي وآمن (Thread-Safe) من غير ما نكتب synchronized.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+
+        function toggle(id) {
+            const box = document.getElementById('ans-' + id);
+            if (box.style.display === 'block') {
+                box.style.display = 'none';
+            } else {
+                box.style.display = 'block';
+            }
+        }
+    </script>
+
+</body>
+
+</html>
