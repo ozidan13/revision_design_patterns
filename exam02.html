@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SET412 Exam 2 - Software Design Patterns</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #0a0e27;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 0;
+            line-height: 1.7;
+        }
+
+        /* Header Section */
+        .exam-header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 3rem 4rem;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .exam-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .exam-info {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #cbd5e1;
+        }
+
+        .exam-info strong {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .student-field {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            font-size: 1rem;
+            color: #94a3b8;
+            transition: all 0.3s ease;
+        }
+
+        .student-field:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        /* Main Content */
+        .content {
+            padding: 4rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Question Section */
+        .question-section {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #6366f1, #a855f7, #3b82f6);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .question-section:hover::before {
+            opacity: 1;
+        }
+
+        .question-section:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .marks-badge {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            letter-spacing: 0.02em;
+        }
+
+        /* MCQ Questions */
+        .mcq-question {
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 16px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mcq-question:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .mcq-question h3 {
+            color: #f1f5f9;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .mcq-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .option {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .option:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: #6366f1;
+            transform: translateX(5px);
+            color: #e2e8f0;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 2rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            margin: 2rem 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-block::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .code-block::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 4px;
+        }
+
+        .code-block::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.5);
+            border-radius: 4px;
+        }
+
+        .code-block::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+
+        .code-block code {
+            white-space: pre;
+            display: block;
+        }
+
+        /* Syntax Highlighting */
+        .keyword {
+            color: #c792ea;
+            font-weight: 600;
+        }
+
+        .class-name {
+            color: #ffcb6b;
+            font-weight: 600;
+        }
+
+        .string {
+            color: #c3e88d;
+        }
+
+        .comment {
+            color: #546e7a;
+            font-style: italic;
+        }
+
+        .blank {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 700;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+        }
+
+        /* Buttons */
+        .show-answer-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            letter-spacing: 0.02em;
+        }
+
+        .show-answer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+
+        .show-answer-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Answer Section */
+        .answer-section {
+            display: none;
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-radius: 16px;
+            animation: slideDown 0.5s ease;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .answer-title {
+            color: #10b981;
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .answer-title::before {
+            content: "✅";
+            font-size: 1.5rem;
+        }
+
+        .answer-section p {
+            margin-bottom: 1rem;
+            color: #d1fae5;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .answer-section p strong {
+            color: #6ee7b7;
+            font-weight: 600;
+        }
+
+        /* Explanation Section */
+        .explanation {
+            background: rgba(251, 191, 36, 0.1);
+            border-right: 4px solid #f59e0b;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-radius: 16px;
+            direction: rtl;
+            text-align: right;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .explanation-title {
+            color: #fbbf24;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .explanation p {
+            color: #fde68a;
+            line-height: 1.9;
+            font-size: 1rem;
+        }
+
+        .explanation strong {
+            color: #fcd34d;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 1rem;
+            border-top: 1px solid rgba(99, 102, 241, 0.2);
+            margin-top: 4rem;
+        }
+
+        .footer p {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer strong {
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+
+            .exam-header,
+            .content {
+                padding: 2rem;
+            }
+
+            .exam-header h1 {
+                font-size: 2rem;
+            }
+
+            .question-section {
+                padding: 2rem;
+            }
+
+            .mcq-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            .exam-header,
+            .content {
+                padding: 1.5rem;
+            }
+
+            .exam-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .question-section {
+                padding: 1.5rem;
+            }
+
+            .code-block {
+                font-size: 0.85rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- EXAM HEADER -->
+    <div class="exam-header">
+        <div class="header-content">
+            <h1>📚 THE EGYPTIAN CHINESE UNIVERSITY</h1>
+            <div class="exam-info">
+                <strong>FACULTY OF ENGINEERING & TECHNOLOGY</strong><br>
+                Department: Software Engineering & Information Technology<br>
+                <strong>Midterm Exam 2</strong><br>
+                Academic Year: 2025/2026 - Fall 2025<br>
+                Course Name: Software Design Patterns | Code: SET 412 | Level: 4<br>
+            </div>
+            <div class="student-info">
+                <div class="student-field">Name: _________________</div>
+                <div class="student-field">ID: _________________</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- Q1: MCQ SECTION -->
+        <div class="question-section">
+            <div class="section-header">
+                <span class="section-title">Q1: [CLO1] Multiple Choice Questions</span>
+                <span class="marks-badge">Marks: 4</span>
+            </div>
+
+            <!-- MCQ 1.1 -->
+            <div class="mcq-question">
+                <h3>1.1. What is the main purpose of the Builder design pattern?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Ensure only one instance of a class exists</div>
+                    <div class="option">b. Construct complex objects step by step</div>
+                    <div class="option">c. Convert incompatible interfaces</div>
+                    <div class="option">d. Split classes into two hierarchies</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.2 -->
+            <div class="mcq-question">
+                <h3>1.2. Which design pattern allows objects with incompatible interfaces to collaborate?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Builder</div>
+                    <div class="option">b. Adapter</div>
+                    <div class="option">c. Singleton</div>
+                    <div class="option">d. Factory Method</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.3 -->
+            <div class="mcq-question">
+                <h3>1.3. In the Builder pattern, what is the role of the Director class?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Contains the product fields</div>
+                    <div class="option">b. Controls the building process and order</div>
+                    <div class="option">c. Creates the final product</div>
+                    <div class="option">d. Defines the product interface</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.4 -->
+            <div class="mcq-question">
+                <h3>1.4. What problem does the Bridge pattern solve?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Wrapping legacy code</div>
+                    <div class="option">b. Extending classes in two independent dimensions</div>
+                    <div class="option">c. Building complex objects</div>
+                    <div class="option">d. Creating families of objects</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.5 -->
+            <div class="mcq-question">
+                <h3>1.5. In the Adapter pattern, what is the Adaptee?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. The interface expected by the client</div>
+                    <div class="option">b. The existing class with incompatible interface</div>
+                    <div class="option">c. The class that bridges two interfaces</div>
+                    <div class="option">d. The client code</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.6 -->
+            <div class="mcq-question">
+                <h3>1.6. Which pattern separates abstraction from implementation?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Adapter</div>
+                    <div class="option">b. Builder</div>
+                    <div class="option">c. Bridge</div>
+                    <div class="option">d. Singleton</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.7 -->
+            <div class="mcq-question">
+                <h3>1.7. What advantage does the Builder pattern provide?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Ensures thread safety</div>
+                    <div class="option">b. Reuse construction code for different representations</div>
+                    <div class="option">c. Makes interfaces compatible</div>
+                    <div class="option">d. Reduces memory usage</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.8 -->
+            <div class="mcq-question">
+                <h3>1.8. In the Bridge pattern, the Abstraction contains a reference to:</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Concrete implementation</div>
+                    <div class="option">b. The Implementer interface</div>
+                    <div class="option">c. Another abstraction</div>
+                    <div class="option">d. The client code</div>
+                </div>
+            </div>
+
+            <button class="show-answer-btn" onclick="toggleAnswer('q1')">Show All Answers</button>
+            <div class="answer-section" id="answer-q1">
+                <div class="answer-title">Correct Answers</div>
+                <p><strong>1.1:</strong> b. Construct complex objects step by step</p>
+                <p><strong>1.2:</strong> b. Adapter</p>
+                <p><strong>1.3:</strong> b. Controls the building process and order</p>
+                <p><strong>1.4:</strong> b. Extending classes in two independent dimensions</p>
+                <p><strong>1.5:</strong> b. The existing class with incompatible interface</p>
+                <p><strong>1.6:</strong> c. Bridge</p>
+                <p><strong>1.7:</strong> b. Reuse construction code for different representations</p>
+                <p><strong>1.8:</strong> b. The Implementer interface</p>
+                <div class="explanation">
+                    <div class="explanation-title">الشرح:</div>
+                    <p>
+                        <strong>1.1:</strong> الـ Builder Pattern بيسمح لنا نبني الكائنات المعقدة خطوة بخطوة (Slide 3 -
+                        Lec 5).<br>
+                        <strong>1.2:</strong> الـ Adapter Pattern بيخلي الكائنات اللي عندها Interfaces مش متوافقة تشتغل
+                        مع بعض (Slide 3 - Lec 6).<br>
+                        <strong>1.3:</strong> الـ Director class مسؤول عن التحكم في عملية البناء والترتيب اللي بيتم بيه
+                        بناء الأجزاء (Slide 11 - Lec 5).<br>
+                        <strong>1.4:</strong> الـ Bridge Pattern بيحل مشكلة توسيع الكلاسات في بُعدين مستقلين زي الشكل
+                        واللون (Slide 6 - Lec 7).<br>
+                        <strong>1.5:</strong> الـ Adaptee هو الكلاس الموجود اللي عنده Interface مش متوافق ومحتاجين ندمجه
+                        (Slide 11 - Lec 6).<br>
+                        <strong>1.6:</strong> الـ Bridge Pattern بيفصل الـ Abstraction عن الـ Implementation عشان
+                        يتطوروا بشكل مستقل (Slide 3 - Lec 7).<br>
+                        <strong>1.7:</strong> Builder Pattern بيسمح لنا نعيد استخدام نفس كود البناء لإنشاء تمثيلات
+                        مختلفة من المنتج (Slide 18 - Lec 5).<br>
+                        <strong>1.8:</strong> الـ Abstraction بتحتوي على مرجع (Reference) للـ Implementer interface
+                        (Slide 9 - Lec 7).
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q2: CODE COMPLETION 1 -->
+        <div class="question-section">
+            <div class="section-header">
+                <span class="section-title">Q2: [CLO2] Code Completion - Adapter Pattern</span>
+                <span class="marks-badge">Marks: 6</span>
+            </div>
+
+            <p>Complete the following Adapter pattern implementation. We have a legacy system with a
+                <strong>LegacyPrinter</strong> class that uses <code>printDocument()</code> method. We need to adapt it
+                to work with a new <strong>Printer</strong> interface that expects a <code>print()</code> method.
+            </p>
+
+            <div class="code-block"><code><span class="comment">// Target Interface</span>
+<span class="keyword">interface</span> <span class="class-name">Printer</span> {
+    <span class="keyword">void</span> <span class="blank">________</span>();  <span class="comment">// Blank 1</span>
+}
+
+<span class="comment">// Adaptee (Legacy class)</span>
+<span class="keyword">class</span> <span class="class-name">LegacyPrinter</span> {
+    <span class="keyword">public void</span> <span class="blank">________</span>() {  <span class="comment">// Blank 2</span>
+        System.out.println(<span class="string">"Legacy Printer is printing a document."</span>);
+    }
+}
+
+<span class="comment">// Adapter</span>
+<span class="keyword">class</span> <span class="class-name">PrinterAdapter</span> <span class="keyword">implements</span> <span class="blank">________</span> {  <span class="comment">// Blank 3</span>
+    <span class="keyword">private</span> <span class="class-name">LegacyPrinter</span> <span class="blank">________</span>;  <span class="comment">// Blank 4</span>
+
+    <span class="keyword">public</span> PrinterAdapter(LegacyPrinter legacyPrinter) {
+        <span class="keyword">this</span>.legacyPrinter = legacyPrinter;
+    }
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> print() {
+        legacyPrinter.<span class="blank">________</span>();  <span class="comment">// Blank 5</span>
+    }
+}
+
+<span class="comment">// Client code</span>
+<span class="keyword">public class</span> <span class="class-name">Main</span> {
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="class-name">LegacyPrinter</span> legacy = <span class="keyword">new</span> LegacyPrinter();
+        <span class="class-name">Printer</span> adapter = <span class="keyword">new</span> <span class="blank">________</span>(legacy);  <span class="comment">// Blank 6</span>
+        adapter.print();
+    }
+}</code></div>
+
+            <button class="show-answer-btn" onclick="toggleAnswer('q2')">Show Answer</button>
+            <div class="answer-section" id="answer-q2">
+                <div class="answer-title">Complete Code Answer</div>
+                <div class="code-block"><code><span class="keyword">interface</span> <span class="class-name">Printer</span> {
+    <span class="keyword">void</span> <strong style="color: #10b981;">print</strong>();
+}
+
+<span class="keyword">class</span> <span class="class-name">LegacyPrinter</span> {
+    <span class="keyword">public void</span> <strong style="color: #10b981;">printDocument</strong>() {
+        System.out.println(<span class="string">"Legacy Printer is printing a document."</span>);
+    }
+}
+
+<span class="keyword">class</span> <span class="class-name">PrinterAdapter</span> <span class="keyword">implements</span> <strong style="color: #10b981;">Printer</strong> {
+    <span class="keyword">private</span> <span class="class-name">LegacyPrinter</span> <strong style="color: #10b981;">legacyPrinter</strong>;
+
+    <span class="keyword">public</span> PrinterAdapter(LegacyPrinter legacyPrinter) {
+        <span class="keyword">this</span>.legacyPrinter = legacyPrinter;
+    }
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> print() {
+        legacyPrinter.<strong style="color: #10b981;">printDocument</strong>();
+    }
+}
+
+<span class="keyword">public class</span> <span class="class-name">Main</span> {
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="class-name">LegacyPrinter</span> legacy = <span class="keyword">new</span> LegacyPrinter();
+        <span class="class-name">Printer</span> adapter = <span class="keyword">new</span> <strong style="color: #10b981;">PrinterAdapter</strong>(legacy);
+        adapter.print();
+    }
+}</code></div>
+                <p><strong>Blank Answers:</strong></p>
+                <p>Blank 1: <strong>print</strong> | Blank 2: <strong>printDocument</strong> | Blank 3:
+                    <strong>Printer</strong> | Blank 4: <strong>legacyPrinter</strong> | Blank 5:
+                    <strong>printDocument</strong> | Blank 6: <strong>PrinterAdapter</strong>
+                </p>
+                <div class="explanation">
+                    <div class="explanation-title">الشرح:</div>
+                    <p>
+                        ده Adapter Pattern الكامل من Lec 6 (Slides 14-17). أول حاجة عندنا الـ Target Interface اللي هو
+                        <strong>Printer</strong> بيحتوي على method اسمها <strong>print()</strong>. بعدين عندنا الـ
+                        Adaptee اللي هو <strong>LegacyPrinter</strong> class وده الكود القديم اللي عنده method اسمها
+                        <strong>printDocument()</strong>. الـ <strong>PrinterAdapter</strong> بيعمل implements للـ
+                        Printer interface وجواه بيمسك مرجع للـ LegacyPrinter. لما الـ Client يستدعي
+                        <strong>print()</strong> method على الـ Adapter، الـ Adapter بيحولها لاستدعاء
+                        <strong>printDocument()</strong> على الـ LegacyPrinter. كده الـ Adapter بيخلي الكود القديم يشتغل
+                        مع الـ Interface الجديد من غير ما نغير في الكود الأصلي.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3: CODE COMPLETION 2 -->
+        <div class="question-section">
+            <div class="section-header">
+                <span class="section-title">Q3: [CLO2] Code Completion - Bridge Pattern</span>
+                <span class="marks-badge">Marks: 10</span>
+            </div>
+
+            <p>Complete the following Bridge pattern implementation for shapes with different colors. The pattern
+                separates shape abstraction from color implementation.</p>
+
+            <div class="code-block"><code><span class="comment">// Implementer interface</span>
+<span class="keyword">public interface</span> <span class="class-name">Color</span> {
+    <span class="keyword">public void</span> <span class="blank">________</span>();  <span class="comment">// Blank 1</span>
+}
+
+<span class="comment">// Concrete Implementer 1</span>
+<span class="keyword">public class</span> <span class="class-name">RedColor</span> <span class="keyword">implements</span> <span class="blank">________</span> {  <span class="comment">// Blank 2</span>
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> applyColor() {
+        System.out.println(<span class="string">"Red -->"</span>);
+    }
+}
+
+<span class="comment">// Concrete Implementer 2</span>
+<span class="keyword">public class</span> <span class="class-name">BlueColor</span> implements Color {
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> <span class="blank">________</span>() {  <span class="comment">// Blank 3</span>
+        System.out.println(<span class="string">"Blue -->"</span>);
+    }
+}
+
+<span class="comment">// Abstraction</span>
+<span class="keyword">public abstract class</span> <span class="class-name">Shape</span> {
+    <span class="keyword">protected</span> <span class="blank">________</span> color;  <span class="comment">// Blank 4</span>
+
+    <span class="keyword">public</span> Shape(<span class="class-name">Color</span> color) {
+        <span class="keyword">this</span>.<span class="blank">________</span> = color;  <span class="comment">// Blank 5</span>
+    }
+
+    <span class="keyword">abstract public void</span> <span class="blank">________</span>();  <span class="comment">// Blank 6</span>
+}
+
+<span class="comment">// Refined Abstraction</span>
+<span class="keyword">public class</span> <span class="class-name">Triangle</span> <span class="keyword">extends</span> <span class="blank">________</span> {  <span class="comment">// Blank 7</span>
+    <span class="keyword">public</span> Triangle(Color color) {
+        <span class="keyword">super</span>(<span class="blank">________</span>);  <span class="comment">// Blank 8</span>
+    }
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> applyColor() {
+        System.out.println(<span class="string">"Triangle is colored with "</span>);
+        color.<span class="blank">________</span>();  <span class="comment">// Blank 9</span>
+    }
+}
+
+<span class="comment">// Client code</span>
+<span class="keyword">public class</span> <span class="class-name">Main</span> {
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="class-name">Shape</span> redTriangle = <span class="keyword">new</span> Triangle(<span class="keyword">new</span> RedColor());
+        redTriangle.<span class="blank">________</span>();  <span class="comment">// Blank 10</span>
+
+        <span class="class-name">Shape</span> blueTriangle = <span class="keyword">new</span> Triangle(<span class="keyword">new</span> BlueColor());
+        blueTriangle.applyColor();
+    }
+}</code></div>
+
+            <button class="show-answer-btn" onclick="toggleAnswer('q3')">Show Answer</button>
+            <div class="answer-section" id="answer-q3">
+                <div class="answer-title">Complete Code Answer</div>
+                <div class="code-block"><code><span class="keyword">public interface</span> <span class="class-name">Color</span> {
+    <span class="keyword">public void</span> <strong style="color: #10b981;">applyColor</strong>();
+}
+
+<span class="keyword">public class</span> <span class="class-name">RedColor</span> <span class="keyword">implements</span> <strong style="color: #10b981;">Color</strong> {
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> applyColor() {
+        System.out.println(<span class="string">"Red -->"</span>);
+    }
+}
+
+<span class="keyword">public class</span> <span class="class-name">BlueColor</span> implements Color {
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> <strong style="color: #10b981;">applyColor</strong>() {
+        System.out.println(<span class="string">"Blue -->"</span>);
+    }
+}
+
+<span class="keyword">public abstract class</span> <span class="class-name">Shape</span> {
+    <span class="keyword">protected</span> <strong style="color: #10b981;">Color</strong> color;
+
+    <span class="keyword">public</span> Shape(<span class="class-name">Color</span> color) {
+        <span class="keyword">this</span>.<strong style="color: #10b981;">color</strong> = color;
+    }
+
+    <span class="keyword">abstract public void</span> <strong style="color: #10b981;">applyColor</strong>();
+}
+
+<span class="keyword">public class</span> <span class="class-name">Triangle</span> <span class="keyword">extends</span> <strong style="color: #10b981;">Shape</strong> {
+    <span class="keyword">public</span> Triangle(Color color) {
+        <span class="keyword">super</span>(<strong style="color: #10b981;">color</strong>);
+    }
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> applyColor() {
+        System.out.println(<span class="string">"Triangle is colored with "</span>);
+        color.<strong style="color: #10b981;">applyColor</strong>();
+    }
+}
+
+<span class="keyword">public class</span> <span class="class-name">Main</span> {
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="class-name">Shape</span> redTriangle = <span class="keyword">new</span> Triangle(<span class="keyword">new</span> RedColor());
+        redTriangle.<strong style="color: #10b981;">applyColor</strong>();
+
+        <span class="class-name">Shape</span> blueTriangle = <span class="keyword">new</span> Triangle(<span class="keyword">new</span> BlueColor());
+        blueTriangle.applyColor();
+    }
+}</code></div>
+                <p><strong>Blank Answers:</strong></p>
+                <p>Blank 1: <strong>applyColor</strong> | Blank 2: <strong>Color</strong> | Blank 3:
+                    <strong>applyColor</strong> | Blank 4: <strong>Color</strong> | Blank 5: <strong>color</strong> |
+                    Blank 6: <strong>applyColor</strong> | Blank 7: <strong>Shape</strong> | Blank 8:
+                    <strong>color</strong> | Blank 9: <strong>applyColor</strong> | Blank 10:
+                    <strong>applyColor</strong>
+                </p>
+                <div class="explanation">
+                    <div class="explanation-title">الشرح:</div>
+                    <p>
+                        ده Bridge Pattern الكامل من Lec 7 (Slides 15-22). الـ Pattern ده بيفصل الـ Abstraction (الأشكال)
+                        عن الـ Implementation (الألوان) عشان يتطوروا بشكل مستقل. أول حاجة عندنا الـ Implementer
+                        interface اللي هو <strong>Color</strong> وفيه method واحدة <strong>applyColor()</strong>. بعدين
+                        عملنا Concrete Implementers (RedColor, BlueColor) كل واحد بيعمل implements للـ Color interface.
+                        الـ <strong>Shape</strong> abstract class (الـ Abstraction) بيحتوي على reference للـ Color
+                        interface. لما نعمل Refined Abstraction زي <strong>Triangle</strong> بيستقبل Color في الـ
+                        Constructor وبيمررها للـ parent class. لما نستدعي <strong>applyColor()</strong> على الـ
+                        Triangle، هو بيستخدم الـ color reference عشان يطبق اللون. كده نقدر نضيف أشكال وألوان جديدة من
+                        غير ما نعمل explosion في عدد الكلاسات.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>📚 Total Questions: 3 Sections | Total Marks: 20</p>
+        <p><strong>With my best wishes for success,</strong></p>
+        <p>Engineer Osama Zinhom</p>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        function toggleAnswer(questionId) {
+            const answerSection = document.getElementById('answer-' + questionId);
+            const button = event.target;
+
+            if (answerSection.style.display === 'none' || answerSection.style.display === '') {
+                answerSection.style.display = 'block';
+                button.textContent = 'Hide Answer';
+                button.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+            } else {
+                answerSection.style.display = 'none';
+                button.textContent = 'Show Answer';
+                button.style.background = 'linear-gradient(135deg, #6366f1, #8b5cf6)';
+            }
+        }
+    </script>
+</body>
+
+</html>

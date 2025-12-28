@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SET412 Exam 1 - Software Design Patterns</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #0a0e27;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 0;
+            line-height: 1.7;
+        }
+
+        /* Header Section */
+        .exam-header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 3rem 4rem;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .exam-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .exam-info {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #cbd5e1;
+        }
+
+        .exam-info strong {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .student-field {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            font-size: 1rem;
+            color: #94a3b8;
+            transition: all 0.3s ease;
+        }
+
+        .student-field:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        /* Main Content */
+        .content {
+            padding: 4rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Question Section */
+        .question-section {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #6366f1, #a855f7, #3b82f6);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .question-section:hover::before {
+            opacity: 1;
+        }
+
+        .question-section:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .marks-badge {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            letter-spacing: 0.02em;
+        }
+
+        /* MCQ Questions */
+        .mcq-question {
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 16px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mcq-question:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .mcq-question h3 {
+            color: #f1f5f9;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .mcq-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .option {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .option:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: #6366f1;
+            transform: translateX(5px);
+            color: #e2e8f0;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 2rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            margin: 2rem 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-block::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .code-block::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 4px;
+        }
+
+        .code-block::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.5);
+            border-radius: 4px;
+        }
+
+        .code-block::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+
+        .code-block code {
+            white-space: pre;
+            display: block;
+        }
+
+        /* Syntax Highlighting */
+        .keyword {
+            color: #c792ea;
+            font-weight: 600;
+        }
+
+        .class-name {
+            color: #ffcb6b;
+            font-weight: 600;
+        }
+
+        .string {
+            color: #c3e88d;
+        }
+
+        .comment {
+            color: #546e7a;
+            font-style: italic;
+        }
+
+        .blank {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 700;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+        }
+
+        /* Buttons */
+        .show-answer-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            letter-spacing: 0.02em;
+        }
+
+        .show-answer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+
+        .show-answer-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Answer Section */
+        .answer-section {
+            display: none;
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-radius: 16px;
+            animation: slideDown 0.5s ease;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .answer-title {
+            color: #10b981;
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .answer-title::before {
+            content: "✅";
+            font-size: 1.5rem;
+        }
+
+        .answer-section p {
+            margin-bottom: 1rem;
+            color: #d1fae5;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .answer-section p strong {
+            color: #6ee7b7;
+            font-weight: 600;
+        }
+
+        /* Explanation Section */
+        .explanation {
+            background: rgba(251, 191, 36, 0.1);
+            border-right: 4px solid #f59e0b;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-radius: 16px;
+            direction: rtl;
+            text-align: right;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .explanation-title {
+            color: #fbbf24;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .explanation p {
+            color: #fde68a;
+            line-height: 1.9;
+            font-size: 1rem;
+        }
+
+        .explanation strong {
+            color: #fcd34d;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 1rem;
+            border-top: 1px solid rgba(99, 102, 241, 0.2);
+            margin-top: 4rem;
+        }
+
+        .footer p {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer strong {
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+
+            .exam-header,
+            .content {
+                padding: 2rem;
+            }
+
+            .exam-header h1 {
+                font-size: 2rem;
+            }
+
+            .question-section {
+                padding: 2rem;
+            }
+
+            .mcq-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            .exam-header,
+            .content {
+                padding: 1.5rem;
+            }
+
+            .exam-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .question-section {
+                padding: 1.5rem;
+            }
+
+            .code-block {
+                font-size: 0.85rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- EXAM HEADER -->
+    <div class="exam-header">
+        <div class="header-content">
+            <h1>📚 THE EGYPTIAN CHINESE UNIVERSITY</h1>
+            <div class="exam-info">
+                <strong>FACULTY OF ENGINEERING & TECHNOLOGY</strong><br>
+                Department: Software Engineering & Information Technology<br>
+                <strong>Midterm Exam 1</strong><br>
+                Academic Year: 2025/2026 - Fall 2025<br>
+                Course Name: Software Design Patterns | Code: SET 412 | Level: 4<br>
+            </div>
+            <div class="student-info">
+                <div class="student-field">Name: _________________</div>
+                <div class="student-field">ID: _________________</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- Q1: MCQ SECTION -->
+        <div class="question-section">
+            <div class="section-header">
+                <span class="section-title">Q1: [CLO1] Multiple Choice Questions</span>
+                <span class="marks-badge">Marks: 4</span>
+            </div>
+
+            <!-- MCQ 1.1 -->
+            <div class="mcq-question">
+                <h3>1.1. What is a design pattern?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Finished code ready to use</div>
+                    <div class="option">b. A standard solution to a common software problem</div>
+                    <div class="option">c. A programming language</div>
+                    <div class="option">d. A database schema</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.2 -->
+            <div class="mcq-question">
+                <h3>1.2. Which category does the Singleton pattern belong to?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Behavioral Patterns</div>
+                    <div class="option">b. Structural Patterns</div>
+                    <div class="option">c. Creational Patterns</div>
+                    <div class="option">d. Architectural Patterns</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.3 -->
+            <div class="mcq-question">
+                <h3>1.3. What is the main purpose of the Singleton pattern?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Create multiple instances of a class</div>
+                    <div class="option">b. Ensure a class has only one instance</div>
+                    <div class="option">c. Hide implementation details</div>
+                    <div class="option">d. Connect incompatible interfaces</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.4 -->
+            <div class="mcq-question">
+                <h3>1.4. In the Singleton pattern, the constructor should be:</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Public</div>
+                    <div class="option">b. Private</div>
+                    <div class="option">c. Protected</div>
+                    <div class="option">d. Default</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.5 -->
+            <div class="mcq-question">
+                <h3>1.5. What does the Factory Method pattern define?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. An interface for creating a single object</div>
+                    <div class="option">b. An interface for creating objects, letting subclasses decide which class to
+                        instantiate</div>
+                    <div class="option">c. A way to clone existing objects</div>
+                    <div class="option">d. A method to build complex objects step by step</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.6 -->
+            <div class="mcq-question">
+                <h3>1.6. Which principle does the Factory Method pattern support?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Tight coupling between classes</div>
+                    <div class="option">b. Open/Closed Principle</div>
+                    <div class="option">c. Direct object instantiation</div>
+                    <div class="option">d. Static method usage</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.7 -->
+            <div class="mcq-question">
+                <h3>1.7. What is the main benefit of Abstract Factory pattern?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Creates objects with complex constructors</div>
+                    <div class="option">b. Produces families of related objects without specifying their concrete
+                        classes</div>
+                    <div class="option">c. Ensures only one instance exists</div>
+                    <div class="option">d. Converts interfaces for compatibility</div>
+                </div>
+            </div>
+
+            <!-- MCQ 1.8 -->
+            <div class="mcq-question">
+                <h3>1.8. What problem does lazy initialization in Singleton pattern solve?</h3>
+                <div class="mcq-options">
+                    <div class="option">a. Thread safety issues</div>
+                    <div class="option">b. Delays instance creation until first use</div>
+                    <div class="option">c. Makes constructor public</div>
+                    <div class="option">d. Allows multiple instances</div>
+                </div>
+            </div>
+
+            <button class="show-answer-btn" onclick="toggleAnswer('q1')">Show All Answers</button>
+            <div class="answer-section" id="answer-q1">
+                <div class="answer-title">Correct Answers</div>
+                <p><strong>1.1:</strong> b. A standard solution to a common software problem</p>
+                <p><strong>1.2:</strong> c. Creational Patterns</p>
+                <p><strong>1.3:</strong> b. Ensure a class has only one instance</p>
+                <p><strong>1.4:</strong> b. Private</p>
+                <p><strong>1.5:</strong> b. An interface for creating objects, letting subclasses decide which class to
+                    instantiate</p>
+                <p><strong>1.6:</strong> b. Open/Closed Principle</p>
+                <p><strong>1.7:</strong> b. Produces families of related objects without specifying their concrete
+                    classes</p>
+                <p><strong>1.8:</strong> b. Delays instance creation until first use</p>
+                <div class="explanation">
+                    <div class="explanation-title">الشرح:</div>
+                    <p>
+                        <strong>1.1:</strong> الـ Design Pattern مش كود جاهز، دي حل قياسي لمشكلة برمجية شائعة بتواجهنا
+                        كتير (Slide 2 - Lec 2).<br>
+                        <strong>1.2:</strong> الـ Singleton من الـ Creational Patterns اللي بتركز على طريقة إنشاء
+                        الكائنات (Slide 4 - Lec 2).<br>
+                        <strong>1.3:</strong> الهدف الأساسي من Singleton إننا نضمن إن الكلاس ليه Instance واحدة بس في
+                        النظام كله (Slide 10 - Lec 2).<br>
+                        <strong>1.4:</strong> الـ Constructor لازم يكون Private عشان محدش يقدر يعمل Instance جديدة من
+                        برة الكلاس (Slide 12 - Lec 2).<br>
+                        <strong>1.5:</strong> Factory Method بيعرف Interface لإنشاء الكائنات، لكن الـ Subclasses هي اللي
+                        بتقرر أي كلاس بالظبط هيتعمل (Slide 3 - Lec 3).<br>
+                        <strong>1.6:</strong> Factory Method بيدعم Open/Closed Principle يعني نقدر نضيف أنواع جديدة من
+                        المنتجات من غير ما نكسر الكود الموجود (Slide 17 - Lec 3).<br>
+                        <strong>1.7:</strong> Abstract Factory بينتج عائلات كاملة من الكائنات المرتبطة ببعض من غير ما
+                        نحدد الكلاسات الفعلية (Slide 3 - Lec 4).<br>
+                        <strong>1.8:</strong> Lazy Initialization بيأجل إنشاء الـ Instance لحد ما نحتاجها فعلاً في أول
+                        استخدام (Slide 15 - Lec 2).
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q2: CODE COMPLETION 1 -->
+        <div class="question-section">
+            <div class="section-header">
+                <span class="section-title">Q2: [CLO2] Code Completion - Singleton Pattern</span>
+                <span class="marks-badge">Marks: 6</span>
+            </div>
+
+            <p>Complete the following Singleton pattern implementation using <strong>Eager Initialization</strong>. The
+                DatabaseConnection class should ensure only one database connection exists throughout the application.
+            </p>
+
+            <div class="code-block"><code><span class="keyword">public class</span> <span class="class-name">DatabaseConnection</span> {
+    <span class="keyword">private static final</span> <span class="class-name">DatabaseConnection</span> <span class="blank">________</span> = <span class="comment">// Blank 1</span>
+            <span class="keyword">new</span> <span class="class-name">DatabaseConnection</span>();
+
+    <span class="comment">// Private constructor</span>
+    <span class="keyword">private</span> <span class="blank">________</span>() {  <span class="comment">// Blank 2</span>
+        System.out.println(<span class="string">"Database connection established"</span>);
+    }
+
+    <span class="comment">// Global access point</span>
+    <span class="keyword">public static</span> <span class="class-name">DatabaseConnection</span> <span class="blank">________</span>() {  <span class="comment">// Blank 3</span>
+        <span class="keyword">return</span> <span class="blank">________</span>;  <span class="comment">// Blank 4</span>
+    }
+
+    <span class="keyword">public void</span> <span class="blank">________</span>() {  <span class="comment">// Blank 5</span>
+        System.out.println(<span class="string">"Executing query..."</span>);
+    }
+}
+
+<span class="comment">// Client code</span>
+<span class="keyword">public class</span> <span class="class-name">Main</span> {
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="class-name">DatabaseConnection</span> db1 = DatabaseConnection.<span class="blank">________</span>();  <span class="comment">// Blank 6</span>
+        <span class="class-name">DatabaseConnection</span> db2 = DatabaseConnection.getInstance();
+        System.out.println(db1 == db2);  <span class="comment">// true</span>
+    }
+}</code></div>
+
+            <button class="show-answer-btn" onclick="toggleAnswer('q2')">Show Answer</button>
+            <div class="answer-section" id="answer-q2">
+                <div class="answer-title">Complete Code Answer</div>
+                <div class="code-block"><code><span class="keyword">public class</span> <span class="class-name">DatabaseConnection</span> {
+    <span class="keyword">private static final</span> <span class="class-name">DatabaseConnection</span> <strong style="color: #10b981;">instance</strong> = 
+            <span class="keyword">new</span> <span class="class-name">DatabaseConnection</span>();
+
+    <span class="keyword">private</span> <strong style="color: #10b981;">DatabaseConnection</strong>() {
+        System.out.println(<span class="string">"Database connection established"</span>);
+    }
+
+    <span class="keyword">public static</span> <span class="class-name">DatabaseConnection</span> <strong style="color: #10b981;">getInstance</strong>() {
+        <span class="keyword">return</span> <strong style="color: #10b981;">instance</strong>;
+    }
+
+    <span class="keyword">public void</span> <strong style="color: #10b981;">executeQuery</strong>() {
+        System.out.println(<span class="string">"Executing query..."</span>);
+    }
+}
+
+<span class="keyword">public class</span> <span class="class-name">Main</span> {
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="class-name">DatabaseConnection</span> db1 = DatabaseConnection.<strong style="color: #10b981;">getInstance</strong>();
+        <span class="class-name">DatabaseConnection</span> db2 = DatabaseConnection.getInstance();
+        System.out.println(db1 == db2);  <span class="comment">// true</span>
+    }
+}</code></div>
+                <p><strong>Blank Answers:</strong></p>
+                <p>Blank 1: <strong>instance</strong> | Blank 2: <strong>DatabaseConnection</strong> | Blank 3:
+                    <strong>getInstance</strong> | Blank 4: <strong>instance</strong> | Blank 5:
+                    <strong>executeQuery</strong> | Blank 6: <strong>getInstance</strong>
+                </p>
+                <div class="explanation">
+                    <div class="explanation-title">الشرح:</div>
+                    <p>
+                        دي Eager Initialization للـ Singleton Pattern (Slide 17-18 من Lec 2). الـ Instance بيتعمل وقت
+                        تحميل الكلاس مباشرة باستخدام <strong>private static final</strong>. الـ Constructor لازم يكون
+                        <strong>private</strong> عشان محدش يقدر يعمل Instance جديدة من برة. الـ
+                        <strong>getInstance()</strong> method بترجع الـ Instance الوحيدة اللي موجودة. المثال ده بسيط و
+                        Thread-safe من غير ما نحتاج Synchronization لأن الـ Instance بيتعمل مرة واحدة بس وقت تحميل
+                        الكلاس.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3: CODE COMPLETION 2 -->
+        <div class="question-section">
+            <div class="section-header">
+                <span class="section-title">Q3: [CLO2] Code Completion - Factory Method Pattern</span>
+                <span class="marks-badge">Marks: 10</span>
+            </div>
+
+            <p>Complete the following Factory Method pattern implementation for a Shape drawing application. The
+                ShapeFactory creates different shapes based on the given type.</p>
+
+            <div class="code-block"><code><span class="comment">// Product interface</span>
+<span class="keyword">public interface</span> <span class="class-name">Shape</span> {
+    <span class="keyword">void</span> <span class="blank">________</span>();  <span class="comment">// Blank 1</span>
+}
+
+<span class="comment">// Concrete Product 1</span>
+<span class="keyword">public class</span> <span class="class-name">Circle</span> <span class="keyword">implements</span> <span class="blank">________</span> {  <span class="comment">// Blank 2</span>
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> draw() {
+        System.out.println(<span class="string">"Draw Circle"</span>);
+    }
+}
+
+<span class="comment">// Concrete Product 2</span>
+<span class="keyword">public class</span> <span class="class-name">Rectangle</span> implements Shape {
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> <span class="blank">________</span>() {  <span class="comment">// Blank 3</span>
+        System.out.println(<span class="string">"Draw Rectangle"</span>);
+    }
+}
+
+<span class="comment">// Concrete Product 3</span>
+<span class="keyword">public class</span> <span class="class-name">Triangle</span> implements Shape {
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> draw() {
+        System.out.println(<span class="string">"Draw Triangle"</span>);
+    }
+}
+
+<span class="comment">// Factory class</span>
+<span class="keyword">public class</span> <span class="class-name">ShapeFactory</span> {
+    <span class="keyword">public</span> <span class="blank">________</span> getShape(String shapeType) {  <span class="comment">// Blank 4</span>
+        <span class="keyword">if</span>(shapeType == <span class="keyword">null</span>) {
+            <span class="keyword">return</span> <span class="blank">________</span>;  <span class="comment">// Blank 5</span>
+        }
+        <span class="keyword">if</span>(shapeType.equalsIgnoreCase(<span class="string">"Circle"</span>)) {
+            <span class="keyword">return new</span> <span class="blank">________</span>();  <span class="comment">// Blank 6</span>
+        } <span class="keyword">else if</span>(shapeType.<span class="blank">________</span>(<span class="string">"Rectangle"</span>)) {  <span class="comment">// Blank 7</span>
+            <span class="keyword">return new</span> Rectangle();
+        } <span class="keyword">else if</span>(shapeType.equalsIgnoreCase(<span class="string">"Triangle"</span>)) {
+            <span class="keyword">return new</span> Triangle();
+        }
+        <span class="keyword">return</span> null;
+    }
+}
+
+<span class="comment">// Client code</span>
+<span class="keyword">public class</span> <span class="class-name">Main</span> {
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="class-name">ShapeFactory</span> factory = <span class="keyword">new</span> <span class="blank">________</span>();  <span class="comment">// Blank 8</span>
+
+        <span class="class-name">Shape</span> shape1 = factory.<span class="blank">________</span>(<span class="string">"Circle"</span>);  <span class="comment">// Blank 9</span>
+        shape1.draw();
+
+        <span class="class-name">Shape</span> shape2 = factory.getShape(<span class="string">"Rectangle"</span>);
+        shape2.<span class="blank">________</span>();  <span class="comment">// Blank 10</span>
+    }
+}</code></div>
+
+            <button class="show-answer-btn" onclick="toggleAnswer('q3')">Show Answer</button>
+            <div class="answer-section" id="answer-q3">
+                <div class="answer-title">Complete Code Answer</div>
+                <div class="code-block"><code><span class="keyword">public interface</span> <span class="class-name">Shape</span> {
+    <span class="keyword">void</span> <strong style="color: #10b981;">draw</strong>();
+}
+
+<span class="keyword">public class</span> <span class="class-name">Circle</span> <span class="keyword">implements</span> <strong style="color: #10b981;">Shape</strong> {
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> draw() {
+        System.out.println(<span class="string">"Draw Circle"</span>);
+    }
+}
+
+<span class="keyword">public class</span> <span class="class-name">Rectangle</span> implements Shape {
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> <strong style="color: #10b981;">draw</strong>() {
+        System.out.println(<span class="string">"Draw Rectangle"</span>);
+    }
+}
+
+<span class="keyword">public class</span> <span class="class-name">Triangle</span> implements Shape {
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> draw() {
+        System.out.println(<span class="string">"Draw Triangle"</span>);
+    }
+}
+
+<span class="keyword">public class</span> <span class="class-name">ShapeFactory</span> {
+    <span class="keyword">public</span> <strong style="color: #10b981;">Shape</strong> getShape(String shapeType) {
+        <span class="keyword">if</span>(shapeType == <span class="keyword">null</span>) {
+            <span class="keyword">return</span> <strong style="color: #10b981;">null</strong>;
+        }
+        <span class="keyword">if</span>(shapeType.equalsIgnoreCase(<span class="string">"Circle"</span>)) {
+            <span class="keyword">return new</span> <strong style="color: #10b981;">Circle</strong>();
+        } <span class="keyword">else if</span>(shapeType.<strong style="color: #10b981;">equalsIgnoreCase</strong>(<span class="string">"Rectangle"</span>)) {
+            <span class="keyword">return new</span> Rectangle();
+        } <span class="keyword">else if</span>(shapeType.equalsIgnoreCase(<span class="string">"Triangle"</span>)) {
+            <span class="keyword">return new</span> Triangle();
+        }
+        <span class="keyword">return</span> null;
+    }
+}
+
+<span class="keyword">public class</span> <span class="class-name">Main</span> {
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="class-name">ShapeFactory</span> factory = <span class="keyword">new</span> <strong style="color: #10b981;">ShapeFactory</strong>();
+
+        <span class="class-name">Shape</span> shape1 = factory.<strong style="color: #10b981;">getShape</strong>(<span class="string">"Circle"</span>);
+        shape1.draw();
+
+        <span class="class-name">Shape</span> shape2 = factory.getShape(<span class="string">"Rectangle"</span>);
+        shape2.<strong style="color: #10b981;">draw</strong>();
+    }
+}</code></div>
+                <p><strong>Blank Answers:</strong></p>
+                <p>Blank 1: <strong>draw</strong> | Blank 2: <strong>Shape</strong> | Blank 3: <strong>draw</strong> |
+                    Blank 4: <strong>Shape</strong> | Blank 5: <strong>null</strong> | Blank 6: <strong>Circle</strong>
+                    | Blank 7: <strong>equalsIgnoreCase</strong> | Blank 8: <strong>ShapeFactory</strong> | Blank 9:
+                    <strong>getShape</strong> | Blank 10: <strong>draw</strong>
+                </p>
+                <div class="explanation">
+                    <div class="explanation-title">الشرح:</div>
+                    <p>
+                        ده Factory Method Pattern الكامل من Lec 3 (Slides 11-16). أول حاجة عرفنا الـ Product interface
+                        اللي هو <strong>Shape</strong> وفيه method واحدة <strong>draw()</strong>. بعدين عملنا Concrete
+                        Products (Circle, Rectangle, Triangle) كل واحد بيعمل <strong>implements Shape</strong> وبينفذ
+                        method الـ draw() بطريقته الخاصة. الـ <strong>ShapeFactory</strong> class فيها method اسمها
+                        <strong>getShape()</strong> بتاخد String وبترجع <strong>Shape</strong>. جوا الـ Factory بنستخدم
+                        <strong>equalsIgnoreCase()</strong> عشان نتحقق من نوع الـ Shape المطلوب ونرجع الكائن المناسب.
+                        الـ Client code بينشئ Factory object وبيستخدم <strong>getShape()</strong> method عشان ياخد
+                        الأشكال المختلفة ويرسمها.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>📚 Total Questions: 3 Sections | Total Marks: 20</p>
+        <p><strong>With my best wishes for success,</strong></p>
+        <p>Engineer Osama Zinhom</p>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        function toggleAnswer(questionId) {
+            const answerSection = document.getElementById('answer-' + questionId);
+            const button = event.target;
+
+            if (answerSection.style.display === 'none' || answerSection.style.display === '') {
+                answerSection.style.display = 'block';
+                button.textContent = 'Hide Answer';
+                button.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+            } else {
+                answerSection.style.display = 'none';
+                button.textContent = 'Show Answer';
+                button.style.background = 'linear-gradient(135deg, #6366f1, #8b5cf6)';
+            }
+        }
+    </script>
+</body>
+
+</html>
